@@ -61,7 +61,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             movieTitle = itemView.findViewById(R.id.top_movie_title_TV);
             movieRating = itemView.findViewById(R.id.top_movie_rating_TV);
 
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -22,13 +22,15 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
     RecyclerView recyclerView;
     RecyclerView.Adapter movieAdapter;
     MainActivityPresenter presenter;
+    Toolbar toolbar;
+    int choice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        toolbar = findViewById(R.id.main_toolbar);
         toolbar.setTitle("Top Movies");
         setSupportActionBar(toolbar);
 
@@ -56,36 +58,34 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
         return true;
     }
 
-    int choice;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.sort_check) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("List movies by");
-            builder.setSingleChoiceItems(R.array.movies_choices, -1, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    choice = which;
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Movies to display");
+        builder.setSingleChoiceItems(R.array.movies_choices, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                choice = which;
+            }
+        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (choice == 0) {
+                    presenter.getPopularMovies();
+                    toolbar.setTitle("Popular Movies");
+                } else if (choice == 1) {
+                    presenter.getTopMovies();
+                    toolbar.setTitle("Top Movies");
                 }
-            }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (choice == 0) {
-                        presenter.getPopularMovies();
-                    } else if (choice == 1) {
-                        presenter.getTopMovies();
-                    }
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-            alertDialog = builder.create();
-            alertDialog.show();
-            return true;
-        }
-        return false;
+                setSupportActionBar(toolbar);
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alertDialog = builder.create();
+        alertDialog.show();
+        return true;
     }
 }

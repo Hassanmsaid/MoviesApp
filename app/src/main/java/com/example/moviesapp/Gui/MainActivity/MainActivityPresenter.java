@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.moviesapp.Model.Parent;
-import com.example.moviesapp.Model.TrailerResponse;
 import com.example.moviesapp.Network.ApiClient;
 import com.example.moviesapp.Network.ApiInterface;
 
@@ -31,15 +30,13 @@ public class MainActivityPresenter {
             public void onResponse(Call<Parent> call, Response<Parent> response) {
                 Log.i("myResponse", response.body().toString());
                 view.getData(response.body());
-                Log.d("first title: ", response.body().getResults().get(1).getTitle());
+//                Log.d("first title: ", response.body().getResults().get(1).getTitle());
             }
-
             @Override
             public void onFailure(Call<Parent> call, Throwable t) {
                 view.showError("Error");
             }
         });
-
     }
 
     void getPopularMovies() {
