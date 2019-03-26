@@ -3,9 +3,14 @@ package com.example.moviesapp.Gui.MainActivity;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.Parent;
 import com.example.moviesapp.Network.ApiClient;
 import com.example.moviesapp.Network.ApiInterface;
+import com.example.moviesapp.Utils.FavouriteDBHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,6 +21,7 @@ public class MainActivityPresenter {
 
     private ApiInterface apiInterface;
     private Context context;
+    FavouriteDBHelper helper;
 
     MainActivityPresenter(IMainActivityView view, Context context) {
         this.view = view;
@@ -30,7 +36,6 @@ public class MainActivityPresenter {
             public void onResponse(Call<Parent> call, Response<Parent> response) {
                 Log.i("myResponse", response.body().toString());
                 view.getData(response.body());
-//                Log.d("first title: ", response.body().getResults().get(1).getTitle());
             }
             @Override
             public void onFailure(Call<Parent> call, Throwable t) {
@@ -54,5 +59,11 @@ public class MainActivityPresenter {
                 view.showError("Error");
             }
         });
+    }
+
+    void getFavouriteMovies(){
+        helper = new FavouriteDBHelper(context);
+        List<Movie> movieList = helper.getAllFavourites();
+        view.getFavourites(movieList);
     }
 }

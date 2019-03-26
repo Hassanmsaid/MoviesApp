@@ -1,4 +1,4 @@
-package com.example.moviesapp.Helpers;
+package com.example.moviesapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +57,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
                     Trailer trailer = trailerList.get(position);
                     String videoKey = trailer.getKey();
                     Intent trailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + videoKey));
-//                    Intent trailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
                     trailerIntent.putExtra("video_key", videoKey);
                     context.startActivity(trailerIntent);
                 }

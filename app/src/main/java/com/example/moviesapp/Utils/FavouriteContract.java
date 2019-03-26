@@ -1,4 +1,4 @@
-package com.example.moviesapp.Helpers;
+package com.example.moviesapp.Utils;
 
 import android.provider.BaseColumns;
 

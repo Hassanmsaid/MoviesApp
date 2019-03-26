@@ -26,13 +26,14 @@ public class Movie {
 
     public Movie(){}
 
-    public Movie(String id, String title, int vote_count, double vote_average, String overview, String release_date) {
+    public Movie(String id, String title, int vote_count, double vote_average, String overview, String release_date, String poster_path) {
         this.id = id;
         this.title = title;
         this.vote_count = vote_count;
         this.vote_average = vote_average;
         this.overview = overview;
         this.release_date = release_date;
+        this.poster_path = poster_path;
     }
 
     public String getId() {

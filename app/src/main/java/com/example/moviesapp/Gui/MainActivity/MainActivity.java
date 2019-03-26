@@ -11,9 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.moviesapp.Helpers.MovieAdapter;
+import com.example.moviesapp.Adapters.MovieAdapter;
+import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.Parent;
 import com.example.moviesapp.R;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IMainActivityView {
 
@@ -48,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
     }
 
     @Override
+    public void getFavourites(List<Movie> movies) {
+        movieAdapter = new MovieAdapter(this, movies);
+        recyclerView.setAdapter(movieAdapter);
+    }
+
+    @Override
     public void showError(String error) {
         Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
     }
@@ -76,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
                 } else if (choice == 1) {
                     presenter.getTopMovies();
                     toolbar.setTitle("Top Movies");
+                }else if (choice == 2) {
+                    presenter.getFavouriteMovies();
+                    toolbar.setTitle("Favourite Movies");
                 }
                 setSupportActionBar(toolbar);
             }

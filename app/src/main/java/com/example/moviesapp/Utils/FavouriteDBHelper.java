@@ -1,4 +1,4 @@
-package com.example.moviesapp.Helpers;
+package com.example.moviesapp.Utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -42,39 +42,40 @@ public class FavouriteDBHelper extends SQLiteOpenHelper {
                         COL_VOTE_COUNT + " INTEGER, " +
                         COL_POSTER_PATH + " TEXT, " +
                         COL_RELEASE_DATE + " INTEGER );";
-        database.execSQL(CREATE_FAVOURITE_TABLE);
+        db.execSQL(CREATE_FAVOURITE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(database);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
     }
 
     private void open() {
         database = helper.getWritableDatabase();
     }
 
-    public void close() {
-        database.close();
-    }
+//    public void close() {
+//        database.close();
+//    }
 
     public void addFavourite(Movie movie) {
-        open();
+//        open();
+        SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_MOVIE_ID, movie.getId());
         values.put(COL_MOVIE_TITLE, movie.getTitle());
-        values.put(COL_POSTER_PATH, movie.getPoster_path());
+        values.put(COL_POSTER_PATH, movie.getPoster_path().substring(60));
         values.put(COL_MOVIE_RATING, movie.getVote_average());
         values.put(COL_VOTE_COUNT, movie.getVote_count());
         values.put(COL_MOVIE_OVERVIEW, movie.getOverview());
         values.put(COL_RELEASE_DATE, movie.getRelease_date());
         database.insert(TABLE_NAME, null, values);
-        close();
+        database.close();
     }
 
-    public void deleteFavourite(int id) {
-        open();
+    public void deleteFavourite(String id) {
+        SQLiteDatabase database = this.getWritableDatabase();
         database.delete(TABLE_NAME, COL_MOVIE_ID + "=" + id, null);
     }
 
@@ -82,7 +83,7 @@ public class FavouriteDBHelper extends SQLiteOpenHelper {
         String[] columns = {COL_MOVIE_ID, COL_MOVIE_TITLE, COL_POSTER_PATH, COL_MOVIE_RATING,
                 COL_VOTE_COUNT, COL_MOVIE_OVERVIEW, COL_RELEASE_DATE};
         List<Movie> favouriteList = new ArrayList<>();
-        database = getReadableDatabase();
+        SQLiteDatabase database = this.getReadableDatabase();
         Cursor cursor = database.query(TABLE_NAME, columns,
                 null, null, null, null, COL_MOVIE_ID);
 

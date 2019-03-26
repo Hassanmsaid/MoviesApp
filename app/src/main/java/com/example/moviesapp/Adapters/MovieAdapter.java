@@ -1,4 +1,4 @@
-package com.example.moviesapp.Helpers;
+package com.example.moviesapp.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +76,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                     movieIntent.putExtra("overview", movie.getOverview());
                     movieIntent.putExtra("release_date", movie.getRelease_date());
                     movieIntent.putExtra("poster_path", movie.getPoster_path());
-
+                    Toast.makeText(context, movie.getPoster_path(), Toast.LENGTH_SHORT).show();
+                    Log.i("poster", movie.getPoster_path());
                     context.startActivity(movieIntent);
                 }
             });

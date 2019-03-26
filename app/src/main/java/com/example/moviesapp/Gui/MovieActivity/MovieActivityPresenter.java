@@ -5,9 +5,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.moviesapp.Gui.MainActivity.MainActivity;
+import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.TrailerResponse;
 import com.example.moviesapp.Network.ApiClient;
 import com.example.moviesapp.Network.ApiInterface;
+import com.example.moviesapp.Utils.FavouriteDBHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,6 +20,7 @@ public class MovieActivityPresenter {
     private int trailers;
     private ApiInterface apiInterface;
     private Context context;
+    private FavouriteDBHelper dbHelper;
 
     MovieActivityPresenter(IMovieActivityView view, Context context) {
         this.view = view;
@@ -49,5 +52,14 @@ public class MovieActivityPresenter {
         });
         if (trailers == 0) return 0;
         else return 1;
+    }
+
+    void saveFavourite(Movie favMovie){
+        dbHelper = new FavouriteDBHelper(context);
+        dbHelper.addFavourite(favMovie);
+    }
+
+    void deleteFavourite(String id){
+        dbHelper.deleteFavourite(id);
     }
 }

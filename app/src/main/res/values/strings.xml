@@ -3,5 +3,6 @@
     <string-array name="movies_choices">
         <item>Popular</item>
         <item>Top</item>
+        <item>Favourites</item>
     </string-array>
 </resources>

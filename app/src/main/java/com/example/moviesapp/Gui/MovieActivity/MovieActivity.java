@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.moviesapp.Helpers.TrailerAdapter;
+import com.example.moviesapp.Adapters.TrailerAdapter;
+import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.TrailerResponse;
 import com.example.moviesapp.R;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
@@ -28,6 +29,7 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
     RecyclerView.Adapter trailerAdapter;
     MovieActivityPresenter presenter;
     MaterialFavoriteButton favButton;
+    Movie favMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +45,18 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
                 if (favorite) {
                     editor.putBoolean("favourite", true);
                     editor.commit();
-                    saveFavourite();
+                    favMovie = getFavMovie();
+                    presenter.saveFavourite(getFavMovie());
                     Snackbar.make(buttonView, "Added to favourites", Snackbar.LENGTH_SHORT).show();
                 } else {
                     editor.putBoolean("favourite", false);
                     editor.commit();
+                    presenter.deleteFavourite(extras.getString("id"));
                     Snackbar.make(buttonView, "Removed from favourites", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
         init();
-    }
-
-    private void saveFavourite() {
     }
 
     private void init() {
@@ -90,7 +91,7 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
 
     @Override
     public void getData(TrailerResponse trailerResponse) {
-        if(trailerResponse.getTrailerList().size() == 0){
+        if (trailerResponse.getTrailerList().size() == 0) {
             trailersTV.setVisibility(View.GONE);
         }
         trailerAdapter = new TrailerAdapter(MovieActivity.this, trailerResponse.getTrailerList());
@@ -100,5 +101,17 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
     @Override
     public void showError(String error) {
         Toast.makeText(MovieActivity.this, error, Toast.LENGTH_LONG).show();
+    }
+
+    public Movie getFavMovie() {
+        Movie movie = new Movie();
+        movie.setId(extras.getString("id"));
+        movie.setTitle(extras.getString("title"));
+        movie.setVote_count(extras.getInt("vote_count"));
+        movie.setVote_average((extras.getDouble("vote_average")));
+        movie.setOverview(extras.getString("overview"));
+        movie.setRelease_date(extras.getString("release_date"));
+        movie.setPoster_path(extras.getString("poster_path"));
+        return movie;
     }
 }
