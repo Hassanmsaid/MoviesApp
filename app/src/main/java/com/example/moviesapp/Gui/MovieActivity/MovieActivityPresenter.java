@@ -60,6 +60,7 @@ public class MovieActivityPresenter {
     }
 
     void deleteFavourite(String id){
+        dbHelper = new FavouriteDBHelper(context);
         dbHelper.deleteFavourite(id);
     }
 }

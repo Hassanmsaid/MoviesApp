@@ -24,8 +24,8 @@ public class FavouriteDBHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "favourites_db";
     private static final int DB_VERSION = 1;
-    SQLiteOpenHelper helper;
-    SQLiteDatabase database;
+    private SQLiteOpenHelper helper;
+    private SQLiteDatabase database;
 
     public FavouriteDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -51,9 +51,9 @@ public class FavouriteDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private void open() {
-        database = helper.getWritableDatabase();
-    }
+//    private void open() {
+//        database = helper.getWritableDatabase();
+//    }
 
 //    public void close() {
 //        database.close();
@@ -105,5 +105,18 @@ public class FavouriteDBHelper extends SQLiteOpenHelper {
         cursor.close();
         close();
         return favouriteList;
+    }
+
+    public boolean movieExists(String movieName){
+        String[] columns = {COL_MOVIE_ID, COL_MOVIE_TITLE, COL_POSTER_PATH, COL_MOVIE_RATING,
+                COL_VOTE_COUNT, COL_MOVIE_OVERVIEW, COL_RELEASE_DATE};
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        String selection = COL_MOVIE_TITLE + "=?";
+        String[] selectionArgs = {movieName};
+        Cursor cursor = database.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null, "1");
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
     }
 }

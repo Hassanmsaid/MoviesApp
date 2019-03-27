@@ -2,6 +2,8 @@ package com.example.moviesapp.Gui.MainActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.moviesapp.Adapters.MovieAdapter;
+import com.example.moviesapp.Gui.MovieActivity.MovieActivity;
 import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.Parent;
 import com.example.moviesapp.R;
@@ -26,7 +29,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
     RecyclerView.Adapter movieAdapter;
     MainActivityPresenter presenter;
     Toolbar toolbar;
-    int choice;
+    int choice, screen;
+    SwipeRefreshLayout swipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +40,56 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
         toolbar = findViewById(R.id.main_toolbar);
         toolbar.setTitle("Top Movies");
         setSupportActionBar(toolbar);
+        init();
 
+        swipe = findViewById(R.id.swipe_main);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                init();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                        switch (choice){
+                            case 0:
+                                presenter.getTopMovies();
+                                break;
+                            case 1:
+                                presenter.getPopularMovies();
+                                break;
+                            case 2:
+                                presenter.getFavouriteMovies();
+                                break;
+                        }
+                        Toast.makeText(MainActivity.this, "Refreshed", Toast.LENGTH_SHORT).show();
+                    }
+                }, 2000);
+
+            }
+        });
+
+        presenter.getTopMovies();
+    }
+
+    private void init(){
         recyclerView = findViewById(R.id.top_movies_RV);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
         presenter = new MainActivityPresenter(this, this);
-        presenter.getTopMovies();
+        choice = 0;
     }
 
     @Override
     public void getData(Parent parent) {
+        //TODO sort list
         movieAdapter = new MovieAdapter(this, parent.getResults());
         recyclerView.setAdapter(movieAdapter);
     }
 
     @Override
     public void getFavourites(List<Movie> movies) {
+        //TODO sort list
         movieAdapter = new MovieAdapter(this, movies);
         recyclerView.setAdapter(movieAdapter);
     }
@@ -80,14 +118,17 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (choice == 0) {
-                    presenter.getPopularMovies();
-                    toolbar.setTitle("Popular Movies");
-                } else if (choice == 1) {
                     presenter.getTopMovies();
                     toolbar.setTitle("Top Movies");
-                }else if (choice == 2) {
+                    screen = 0;
+                } else if (choice == 1) {
+                    presenter.getPopularMovies();
+                    toolbar.setTitle("Popular Movies");
+                    screen = 1;
+                } else if (choice == 2) {
                     presenter.getFavouriteMovies();
                     toolbar.setTitle("Favourite Movies");
+                    screen = 2;
                 }
                 setSupportActionBar(toolbar);
             }
@@ -99,5 +140,14 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
         alertDialog = builder.create();
         alertDialog.show();
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if (MovieActivity.refresh){
+//            recyclerView.removeViewAt(getI);
+//        }
+//            movieAdapter.notifyDataSetChanged();
     }
 }

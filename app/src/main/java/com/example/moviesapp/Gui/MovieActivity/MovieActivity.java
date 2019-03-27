@@ -1,8 +1,6 @@
 package com.example.moviesapp.Gui.MovieActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,11 +15,13 @@ import com.example.moviesapp.Adapters.TrailerAdapter;
 import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.TrailerResponse;
 import com.example.moviesapp.R;
+import com.example.moviesapp.Utils.FavouriteDBHelper;
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.squareup.picasso.Picasso;
 
 public class MovieActivity extends AppCompatActivity implements IMovieActivityView {
 
+    public static boolean refresh;
     ImageView movieImg;
     TextView movieTitle, movieOverview, movieRating, movieRateCount, trailersTV;
     Bundle extras;
@@ -30,33 +30,30 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
     MovieActivityPresenter presenter;
     MaterialFavoriteButton favButton;
     Movie favMovie;
+    FavouriteDBHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
-        favButton = findViewById(R.id.details_fav_btn);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        init();
+        if (helper.movieExists(movieTitle.getText().toString())) {
+            favButton.setFavorite(true);
+        }
         favButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
             @Override
             public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                SharedPreferences.Editor editor = getSharedPreferences("favourites", MODE_PRIVATE).edit();
                 if (favorite) {
-                    editor.putBoolean("favourite", true);
-                    editor.commit();
-                    favMovie = getFavMovie();
                     presenter.saveFavourite(getFavMovie());
                     Snackbar.make(buttonView, "Added to favourites", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    editor.putBoolean("favourite", false);
-                    editor.commit();
                     presenter.deleteFavourite(extras.getString("id"));
+                    refresh = true;
                     Snackbar.make(buttonView, "Removed from favourites", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
-        init();
     }
 
     private void init() {
@@ -67,6 +64,8 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
         movieRateCount = findViewById(R.id.details_movie_rate_count);
         trailersTV = findViewById(R.id.details_movie_trailers_TV);
         extras = getIntent().getExtras();
+        favButton = findViewById(R.id.details_fav_btn);
+        helper = new FavouriteDBHelper(this);
 
         recyclerView = findViewById(R.id.videos_RV);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

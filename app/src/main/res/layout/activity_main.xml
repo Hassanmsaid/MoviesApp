@@ -10,16 +10,32 @@
     android:orientation="vertical"
     tools:context=".Gui.MainActivity.MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/main_toolbar"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_4"
-        android:theme="@style/ToolBarStyle" />
+        android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/top_movies_RV"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_4"
+                android:theme="@style/ToolBarStyle" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/top_movies_RV"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>
