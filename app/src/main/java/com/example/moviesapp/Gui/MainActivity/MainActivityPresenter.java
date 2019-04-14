@@ -9,7 +9,6 @@ import com.example.moviesapp.Network.ApiClient;
 import com.example.moviesapp.Network.ApiInterface;
 import com.example.moviesapp.Utils.FavouriteDBHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,6 +36,7 @@ public class MainActivityPresenter {
                 Log.i("myResponse", response.body().toString());
                 view.getData(response.body());
             }
+
             @Override
             public void onFailure(Call<Parent> call, Throwable t) {
                 view.showError("Error");
@@ -61,7 +61,7 @@ public class MainActivityPresenter {
         });
     }
 
-    void getFavouriteMovies(){
+    void getFavouriteMovies() {
         helper = new FavouriteDBHelper(context);
         List<Movie> movieList = helper.getAllFavourites();
         view.getFavourites(movieList);

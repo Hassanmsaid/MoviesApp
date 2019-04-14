@@ -1,6 +1,7 @@
 package com.example.moviesapp.Gui.MovieActivity;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -57,10 +58,24 @@ public class MovieActivityPresenter {
     void saveFavourite(Movie favMovie){
         dbHelper = new FavouriteDBHelper(context);
         dbHelper.addFavourite(favMovie);
+        view.showSnackbar("Added to favourites");
     }
 
     void deleteFavourite(String id){
         dbHelper = new FavouriteDBHelper(context);
         dbHelper.deleteFavourite(id);
+        view.showSnackbar("Removed from favourites");
+    }
+
+    Movie getFavMovie(Bundle extras) {
+        Movie movie = new Movie();
+        movie.setId(extras.getString("id"));
+        movie.setTitle(extras.getString("title"));
+        movie.setVote_count(extras.getInt("vote_count"));
+        movie.setVote_average((extras.getDouble("vote_average")));
+        movie.setOverview(extras.getString("overview"));
+        movie.setRelease_date(extras.getString("release_date"));
+        movie.setPoster_path(extras.getString("poster_path"));
+        return movie;
     }
 }

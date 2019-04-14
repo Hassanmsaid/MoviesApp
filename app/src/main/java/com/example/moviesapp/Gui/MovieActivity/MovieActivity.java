@@ -1,6 +1,7 @@
 package com.example.moviesapp.Gui.MovieActivity;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moviesapp.Adapters.TrailerAdapter;
-import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.TrailerResponse;
 import com.example.moviesapp.R;
 import com.example.moviesapp.Utils.FavouriteDBHelper;
@@ -29,8 +29,8 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
     RecyclerView.Adapter trailerAdapter;
     MovieActivityPresenter presenter;
     MaterialFavoriteButton favButton;
-    Movie favMovie;
     FavouriteDBHelper helper;
+    CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
         setContentView(R.layout.activity_movie);
 
         init();
+
         if (helper.movieExists(movieTitle.getText().toString())) {
             favButton.setFavorite(true);
         }
@@ -45,17 +46,16 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
             @Override
             public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
                 if (favorite) {
-                    presenter.saveFavourite(getFavMovie());
-                    Snackbar.make(buttonView, "Added to favourites", Snackbar.LENGTH_SHORT).show();
+                    presenter.saveFavourite(presenter.getFavMovie(extras));
                 } else {
                     presenter.deleteFavourite(extras.getString("id"));
                     refresh = true;
-                    Snackbar.make(buttonView, "Removed from favourites", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    //initialize variables
     private void init() {
         movieImg = findViewById(R.id.details_movie_img);
         movieTitle = findViewById(R.id.details_movie_title);
@@ -67,6 +67,7 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
         favButton = findViewById(R.id.details_fav_btn);
         helper = new FavouriteDBHelper(this);
 
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
         recyclerView = findViewById(R.id.videos_RV);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -102,15 +103,8 @@ public class MovieActivity extends AppCompatActivity implements IMovieActivityVi
         Toast.makeText(MovieActivity.this, error, Toast.LENGTH_LONG).show();
     }
 
-    public Movie getFavMovie() {
-        Movie movie = new Movie();
-        movie.setId(extras.getString("id"));
-        movie.setTitle(extras.getString("title"));
-        movie.setVote_count(extras.getInt("vote_count"));
-        movie.setVote_average((extras.getDouble("vote_average")));
-        movie.setOverview(extras.getString("overview"));
-        movie.setRelease_date(extras.getString("release_date"));
-        movie.setPoster_path(extras.getString("poster_path"));
-        return movie;
+    @Override
+    public void showSnackbar(String message) {
+        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 }

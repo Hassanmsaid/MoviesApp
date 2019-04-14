@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.moviesapp.Adapters.MovieAdapter;
-import com.example.moviesapp.Gui.MovieActivity.MovieActivity;
 import com.example.moviesapp.Model.Movie;
 import com.example.moviesapp.Model.Parent;
 import com.example.moviesapp.R;
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
     RecyclerView.Adapter movieAdapter;
     MainActivityPresenter presenter;
     Toolbar toolbar;
-    int choice, screen;
+    int choice;
     SwipeRefreshLayout swipe;
 
     @Override
@@ -37,21 +36,16 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.main_toolbar);
-        toolbar.setTitle("Top Movies");
-        setSupportActionBar(toolbar);
         init();
 
-        swipe = findViewById(R.id.swipe_main);
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                init();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-                        switch (choice){
+                        switch (choice) {
                             case 0:
                                 presenter.getTopMovies();
                                 break;
@@ -68,11 +62,16 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
 
             }
         });
-
         presenter.getTopMovies();
     }
 
-    private void init(){
+    //initialize variables
+    private void init() {
+        toolbar = findViewById(R.id.main_toolbar);
+        toolbar.setTitle("Top Movies");
+        setSupportActionBar(toolbar);
+
+        swipe = findViewById(R.id.swipe_main);
         recyclerView = findViewById(R.id.top_movies_RV);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
@@ -120,15 +119,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
                 if (choice == 0) {
                     presenter.getTopMovies();
                     toolbar.setTitle("Top Movies");
-                    screen = 0;
                 } else if (choice == 1) {
                     presenter.getPopularMovies();
                     toolbar.setTitle("Popular Movies");
-                    screen = 1;
                 } else if (choice == 2) {
                     presenter.getFavouriteMovies();
                     toolbar.setTitle("Favourite Movies");
-                    screen = 2;
                 }
                 setSupportActionBar(toolbar);
             }
@@ -140,14 +136,5 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
         alertDialog = builder.create();
         alertDialog.show();
         return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (MovieActivity.refresh){
-//            recyclerView.removeViewAt(getI);
-//        }
-//            movieAdapter.notifyDataSetChanged();
     }
 }

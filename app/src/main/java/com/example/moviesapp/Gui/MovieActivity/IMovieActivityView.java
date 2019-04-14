@@ -4,5 +4,8 @@ import com.example.moviesapp.Model.TrailerResponse;
 
 public interface IMovieActivityView {
     void getData(TrailerResponse trailerResponse);
+
     void showError(String error);
+
+    void showSnackbar(String message);
 }
